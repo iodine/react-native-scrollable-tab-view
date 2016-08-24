@@ -1,6 +1,9 @@
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
+var {
+  PropTypes,
+} = React;
 var {
   Dimensions,
   View,
@@ -9,9 +12,8 @@ var {
   Platform,
   StyleSheet,
   ViewPagerAndroid,
-  PropTypes,
   InteractionManager,
-} = React;
+} = require('react-native');
 
 var DefaultTabBar = require('./DefaultTabBar');
 var deviceWidth = Dimensions.get('window').width;

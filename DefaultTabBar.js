@@ -1,13 +1,13 @@
 'use strict';
 
-var React = require('react-native');
+var React = require('react');
 var {
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
   Animated,
-} = React;
+} = require('react-native');
 
 
 var styles = StyleSheet.create({

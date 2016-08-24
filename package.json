@@ -6,6 +6,9 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "dependencies": {
+    "react": "^15.2.1"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/brentvatne/react-native-scrollable-tab-view.git"

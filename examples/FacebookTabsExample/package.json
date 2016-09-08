@@ -6,8 +6,10 @@
     "start": "node_modules/react-native/packager/packager.sh"
   },
   "dependencies": {
-    "react-native": "^0.16.0",
-    "react-native-icons": "^0.7.0",
-    "react-native-scrollable-tab-view": "../.."
+    "react": "^15.1.0",
+    "react-native": "^0.28.0",
+    "react-native-scrollable-tab-view": "../..",
+    "react-native-vector-icons": "^2.0.3",
+    "react-timer-mixin": "^0.13.3"
   }
 }

@@ -1,17 +1,61 @@
-'use strict';
-
-var React = require('react-native');
-var {
+import React from 'react';
+import {
   StyleSheet,
   Text,
   View,
   TouchableOpacity,
-  Animated,
-} = React;
+} from 'react-native';
+import Icon from 'react-native-vector-icons/Ionicons';
 
-var { Icon, } = require('react-native-icons');
+const FacebookTabBar = React.createClass({
+  tabIcons: [],
 
-var styles = StyleSheet.create({
+  propTypes: {
+    goToPage: React.PropTypes.func,
+    activeTab: React.PropTypes.number,
+    tabs: React.PropTypes.array,
+  },
+
+  componentDidMount() {
+    this._listener = this.props.scrollValue.addListener(this.setAnimationValue);
+  },
+
+  setAnimationValue({ value, }) {
+    this.tabIcons.forEach((icon, i) => {
+      const progress = (value - i >= 0 && value - i <= 1) ? value - i : 1;
+      icon.setNativeProps({
+        style: {
+          color: this.iconColor(progress),
+        },
+      });
+    });
+  },
+
+  //color between rgb(59,89,152) and rgb(204,204,204)
+  iconColor(progress) {
+    const red = 59 + (204 - 59) * progress;
+    const green = 89 + (204 - 89) * progress;
+    const blue = 152 + (204 - 152) * progress;
+    return `rgb(${red}, ${green}, ${blue})`;
+  },
+
+  render() {
+    return <View style={[styles.tabs, this.props.style, ]}>
+      {this.props.tabs.map((tab, i) => {
+        return <TouchableOpacity key={tab} onPress={() => this.props.goToPage(i)} style={styles.tab}>
+          <Icon
+            name={tab}
+            size={30}
+            color={this.props.activeTab === i ? 'rgb(59,89,152)' : 'rgb(204,204,204)'}
+            ref={(icon) => { this.tabIcons[i] = icon; }}
+          />
+        </TouchableOpacity>;
+      })}
+    </View>;
+  },
+});
+
+const styles = StyleSheet.create({
   tab: {
     flex: 1,
     alignItems: 'center',
@@ -28,86 +72,6 @@ var styles = StyleSheet.create({
     borderRightWidth: 0,
     borderBottomColor: 'rgba(0,0,0,0.05)',
   },
-  icon: {
-    width: 30,
-    height: 30,
-    position: 'absolute',
-    top: 0,
-    left: 20,
-  },
 });
 
-var FacebookTabBar = React.createClass({
-  selectedTabIcons: [],
-  unselectedTabIcons: [],
-
-  propTypes: {
-    goToPage: React.PropTypes.func,
-    activeTab: React.PropTypes.number,
-    tabs: React.PropTypes.array
-  },
-
-  renderTabOption(name, page) {
-    var isTabActive = this.props.activeTab === page;
-
-    return (
-      <TouchableOpacity key={name} onPress={() => this.props.goToPage(page)} style={styles.tab}>
-        <Icon name={name} size={30} color='#3B5998' style={styles.icon}
-              ref={(icon) => { this.selectedTabIcons[page] = icon }}/>
-        <Icon name={name} size={30} color='#ccc' style={styles.icon}
-              ref={(icon) => { this.unselectedTabIcons[page] = icon }}/>
-      </TouchableOpacity>
-    );
-  },
-
-  componentDidMount() {
-    this.setAnimationValue({value: this.props.activeTab});
-    this._listener = this.props.scrollValue.addListener(this.setAnimationValue);
-  },
-
-  setAnimationValue({value}) {
-    var currentPage = this.props.activeTab;
-
-    this.unselectedTabIcons.forEach((icon, i) => {
-      var iconRef = icon;
-
-      if (!icon.setNativeProps && icon !== null) {
-        iconRef = icon.refs.icon_image
-      }
-
-      if (value - i >= 0 && value - i <= 1) {
-        iconRef.setNativeProps({opacity: value - i});
-      }
-      if (i - value >= 0 &&  i - value <= 1) {
-        iconRef.setNativeProps({opacity: i - value});
-      }
-    });
-  },
-
-  render() {
-    var containerWidth = this.props.containerWidth;
-    var numberOfTabs = this.props.tabs.length;
-    var tabUnderlineStyle = {
-      position: 'absolute',
-      width: containerWidth / numberOfTabs,
-      height: 3,
-      backgroundColor: '#3b5998',
-      bottom: 0,
-    };
-
-    var left = this.props.scrollValue.interpolate({
-      inputRange: [0, 1], outputRange: [0, containerWidth / numberOfTabs]
-    });
-
-    return (
-      <View>
-        <View style={styles.tabs}>
-          {this.props.tabs.map((tab, i) => this.renderTabOption(tab, i))}
-        </View>
-        <Animated.View style={[tabUnderlineStyle, {left}]} />
-      </View>
-    );
-  },
-});
-
-module.exports = FacebookTabBar;
+export default FacebookTabBar;
